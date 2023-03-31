@@ -1,29 +1,29 @@
-import { User } from "@/ts/accounts";
-import React from "react";
-import { useAppDispatch } from "../../redux/store";
-import { insertNewUser } from "../../redux/slice/accounts/AccountSlice";
-import { Field, Form, Formik, FormikHelpers } from "formik";
-import * as Yup from "yup";
+import { User } from '@/ts/accounts';
+import React from 'react';
+import { useAppDispatch } from '../../redux/store';
+import { insertNewUser } from '../../redux/slice/accounts/AccountSlice';
+import { Field, Form, Formik, FormikHelpers } from 'formik';
+import * as Yup from 'yup';
 
 const Register: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const SignupSchema = Yup.object().shape({
-    fullname: Yup.string().required("Required"),
+    fullname: Yup.string().required('Required'),
     password: Yup.string()
-      .min(2, "Too Short!")
-      .max(50, "Too Long!")
-      .required("Required"),
-    email: Yup.string().email("Invalid email").required("Required"),
+      .min(2, 'Too Short!')
+      .max(50, 'Too Long!')
+      .required('Required'),
+    email: Yup.string().email('Invalid email').required('Required'),
   });
 
   return (
     <>
       <Formik
         initialValues={{
-          fullname: "",
-          email: "",
-          password: "",
+          fullname: '',
+          email: '',
+          password: '',
         }}
         validationSchema={SignupSchema}
         onSubmit={(values: User, { setSubmitting }: FormikHelpers<User>) => {
