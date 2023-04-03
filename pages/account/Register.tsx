@@ -4,12 +4,25 @@ import { useAppDispatch } from '../../redux/store';
 import { insertNewUser } from '../../redux/slice/accounts/AccountSlice';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
+import CssBaseline from '@mui/material/CssBaseline';
+import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 
-const Register: React.FC = () => {
+const Register: React.FC = (props: any) => {
   const dispatch = useAppDispatch();
 
   const SignupSchema = Yup.object().shape({
-    fullname: Yup.string().required('Required'),
+    firstName: Yup.string().required('Required'),
+    lastName: Yup.string().required('Required'),
     password: Yup.string()
       .min(2, 'Too Short!')
       .max(50, 'Too Long!')
@@ -17,11 +30,14 @@ const Register: React.FC = () => {
     email: Yup.string().email('Invalid email').required('Required'),
   });
 
+  const theme = createTheme();
+
   return (
     <>
       <Formik
         initialValues={{
-          fullname: '',
+          firstName: '',
+          lastName: '',
           email: '',
           password: '',
         }}
@@ -34,45 +50,97 @@ const Register: React.FC = () => {
         }}
       >
         {({ errors, touched }) => (
-          <Form
-            className="w-96 mx-auto mt-10 flex flex-col gap-10 bg-zinc-200 p-10
- rounded-xl shadow-lg"
-          >
-            <p className="text-center font-bold pb-8 text-black">
-              Create New Account
-            </p>
-            <Field
-              className="rounded-md border border-solid border-gray-100 bg-gray-100 outline-none px-3 py-2 transition duration-400 ease-in-out shadow-md"
-              id="fullname"
-              name="fullname"
-              placeholder="Full name"
-            />
-            {errors.fullname && touched.fullname ? (
-              <div>{errors.fullname}</div>
-            ) : null}
-            <Field
-              className="rounded-md border border-solid border-gray-100 bg-gray-100 outline-none px-3 py-2 transition duration-400 ease-in-out shadow-md"
-              id="email"
-              name="email"
-              placeholder="Username"
-            />
-            {errors.email && touched.email ? <div>{errors.email}</div> : null}
+          <ThemeProvider theme={theme}>
+            <Container component="main" maxWidth="xs">
+              <CssBaseline />
+              <Box
+                sx={{
+                  marginTop: 8,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                }}
+              >
+                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}></Avatar>
+                <Typography component="h1" variant="h5">
+                  Sign up
+                </Typography>
+                <Form>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        autoComplete="given-name"
+                        name="firstName"
+                        required
+                        fullWidth
+                        id="firstName"
+                        label="First Name"
+                        autoFocus
+                        error={touched.password && Boolean(errors.password)}
+                        helperText={touched.password && errors.password}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        required
+                        fullWidth
+                        id="lastName"
+                        label="Last Name"
+                        name="lastName"
+                        autoComplete="family-name"
+                      />
+                    </Grid>
 
-            <Field
-              className="rounded-md border border-solid border-gray-100 bg-gray-100 outline-none px-3 py-2 transition duration-400 ease-in-out shadow-md"
-              id="password"
-              name="password"
-              placeholder="Password"
-            />
-            {errors.email && touched.email ? <div>{errors.email}</div> : null}
-
-            <button
-              className="bg-cyan-900 text-white shadow-md h-10 transition ease-out duration-500 hover:bg-white hover:text-gray-700 focus:bg-white focus:text-gray-700"
-              type="submit"
-            >
-              Register
-            </button>
-          </Form>
+                    <Grid item xs={12}>
+                      <TextField
+                        required
+                        fullWidth
+                        id="email"
+                        label="Email Address"
+                        type="email"
+                        name="email"
+                        autoComplete="email"
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        required
+                        fullWidth
+                        type="password"
+                        name="password"
+                        label="Password"
+                        id="password"
+                        autoComplete="new-password"
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox value="allowExtraEmails" color="primary" />
+                        }
+                        label="I want to receive inspiration, marketing promotions and updates via email."
+                      />
+                    </Grid>
+                  </Grid>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{ mt: 3, mb: 2 }}
+                  >
+                    Sign Up
+                  </Button>
+                  <Grid container justifyContent="flex-end">
+                    <Grid item>
+                      <Link href="#" variant="body2">
+                        Already have an account? Sign in
+                      </Link>
+                    </Grid>
+                  </Grid>
+                </Form>
+              </Box>
+            </Container>
+          </ThemeProvider>
         )}
       </Formik>
     </>
