@@ -4,3 +4,9 @@ export interface User {
   email: string;
   password: string;
 }
+
+export interface UserLogIn {
+  email: string;
+  password: string;
+  isLoggedIn: boolean;
+}

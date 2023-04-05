@@ -29,7 +29,7 @@ const NavBar = () => {
       <Link href="#home">
         <HiShoppingCart />
       </Link>
-      <Link href="#home">Login</Link>
+      <Link href="/account/Login">Login</Link>
       <Link href="/account/Register">Register</Link>
       <a className={icon}>
         <GiHamburgerMenu style={{ color: 'white' }} onClick={handleClick} />

@@ -1,6 +1,6 @@
 import { User } from '@/ts/accounts';
-import React from 'react';
-import { useAppDispatch } from '../../redux/store';
+import React, { useEffect, useState } from 'react';
+import { RootState, useAppDispatch } from '../../redux/store';
 import { insertNewUser } from '../../redux/slice/accounts/AccountSlice';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
@@ -8,17 +8,32 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import { createTheme, ThemeProvider, makeStyles } from '@mui/material/styles';
+import { useSelector } from 'react-redux';
+import { Alert, AlertTitle, Fade } from '@mui/material';
+
+const theme = createTheme();
 
 const Register: React.FC = (props: any) => {
   const dispatch = useAppDispatch();
+  const error = useSelector((state: RootState) => state.account.error);
+  const [alertVisibility, setAlertVisibility] = useState(false);
+
+  useEffect(() => {
+    if (error) {
+      setAlertVisibility(true);
+      const timeoutId = setTimeout(() => {
+        setAlertVisibility(false);
+      }, 2000);
+
+      return () => clearTimeout(timeoutId);
+    }
+  }, [error]);
 
   const SignupSchema = Yup.object().shape({
     firstName: Yup.string().required('Required'),
@@ -29,8 +44,6 @@ const Register: React.FC = (props: any) => {
       .required('Required'),
     email: Yup.string().email('Invalid email').required('Required'),
   });
-
-  const theme = createTheme();
 
   return (
     <>
@@ -49,7 +62,7 @@ const Register: React.FC = (props: any) => {
           }, 500);
         }}
       >
-        {({ errors, touched }) => (
+        {({ errors, touched, handleBlur, handleChange, handleSubmit }) => (
           <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
               <CssBaseline />
@@ -62,13 +75,14 @@ const Register: React.FC = (props: any) => {
                 }}
               >
                 <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}></Avatar>
-                <Typography component="h1" variant="h5">
+                <Typography component="h1" variant="h5" mb={2}>
                   Sign up
                 </Typography>
-                <Form>
+                <form onSubmit={handleSubmit}>
                   <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
-                      <TextField
+                      <Field
+                        as={TextField}
                         autoComplete="given-name"
                         name="firstName"
                         required
@@ -76,23 +90,31 @@ const Register: React.FC = (props: any) => {
                         id="firstName"
                         label="First Name"
                         autoFocus
-                        error={touched.password && Boolean(errors.password)}
-                        helperText={touched.password && errors.password}
+                        error={touched.firstName && Boolean(errors.firstName)}
+                        helperText={touched.firstName && errors.firstName}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
                       />
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                      <TextField
+                      <Field
+                        as={TextField}
                         required
                         fullWidth
                         id="lastName"
                         label="Last Name"
                         name="lastName"
                         autoComplete="family-name"
+                        error={touched.lastName && Boolean(errors.lastName)}
+                        helperText={touched.lastName && errors.lastName}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
                       />
                     </Grid>
 
                     <Grid item xs={12}>
-                      <TextField
+                      <Field
+                        as={TextField}
                         required
                         fullWidth
                         id="email"
@@ -100,10 +122,15 @@ const Register: React.FC = (props: any) => {
                         type="email"
                         name="email"
                         autoComplete="email"
+                        error={touched.email && Boolean(errors.email)}
+                        helperText={touched.email && errors.email}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      <TextField
+                      <Field
+                        as={TextField}
                         required
                         fullWidth
                         type="password"
@@ -111,14 +138,6 @@ const Register: React.FC = (props: any) => {
                         label="Password"
                         id="password"
                         autoComplete="new-password"
-                      />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <FormControlLabel
-                        control={
-                          <Checkbox value="allowExtraEmails" color="primary" />
-                        }
-                        label="I want to receive inspiration, marketing promotions and updates via email."
                       />
                     </Grid>
                   </Grid>
@@ -132,17 +151,26 @@ const Register: React.FC = (props: any) => {
                   </Button>
                   <Grid container justifyContent="flex-end">
                     <Grid item>
-                      <Link href="#" variant="body2">
+                      <Link href="/account/Login" variant="body2">
                         Already have an account? Sign in
                       </Link>
                     </Grid>
                   </Grid>
-                </Form>
+                </form>
               </Box>
             </Container>
           </ThemeProvider>
         )}
       </Formik>
+      {alertVisibility && (
+        <Fade in={alertVisibility} timeout={1000}>
+          <Alert severity="error">
+            <AlertTitle>Error</AlertTitle>
+            This is an error alert —{' '}
+            <strong>Email already exist in our database!</strong>
+          </Alert>
+        </Fade>
+      )}
     </>
   );
 };
