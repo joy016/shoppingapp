@@ -2,30 +2,51 @@ import { User } from '@/ts/accounts';
 import React, { useEffect, useState } from 'react';
 import { RootState, useAppDispatch } from '../../redux/store';
 import { insertNewUser } from '../../redux/slice/accounts/AccountSlice';
-import { Field, Form, Formik, FormikHelpers } from 'formik';
+import { Field, Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
+import Link from 'next/link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider, makeStyles } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useSelector } from 'react-redux';
-import { Alert, AlertTitle, Fade } from '@mui/material';
+import { Alert, AlertTitle, Snackbar } from '@mui/material';
 
 const theme = createTheme();
 
-const Register: React.FC = (props: any) => {
+interface MyAlertProps {
+  statusMessage: string;
+  severity: 'success' | 'error';
+  alertTitle: string;
+}
+
+const Register: React.FC<MyAlertProps> = (props) => {
   const dispatch = useAppDispatch();
-  const error = useSelector((state: RootState) => state.account.error);
+  const status = useSelector((state: RootState) => state.account.status);
   const [alertVisibility, setAlertVisibility] = useState(false);
+  const [statusMessage, setStatusMessage] = useState(props.statusMessage);
+  const [severity, setSeverity] = useState(props.severity);
+  const [alertTitle, setAlertTitle] = useState(props.alertTitle);
 
   useEffect(() => {
-    if (error) {
+    if (status === 'success') {
+      setStatusMessage('Account registration Successfully');
+      setSeverity('success');
+      setAlertTitle('Success');
+    } else if (status === 'failure') {
+      setStatusMessage('Email already exist in our database!');
+      setSeverity('error');
+      setAlertTitle('error');
+    } else {
+      return;
+    }
+
+    if (status) {
       setAlertVisibility(true);
       const timeoutId = setTimeout(() => {
         setAlertVisibility(false);
@@ -33,13 +54,13 @@ const Register: React.FC = (props: any) => {
 
       return () => clearTimeout(timeoutId);
     }
-  }, [error]);
+  }, [status, props.statusMessage]);
 
   const SignupSchema = Yup.object().shape({
     firstName: Yup.string().required('Required'),
     lastName: Yup.string().required('Required'),
     password: Yup.string()
-      .min(2, 'Too Short!')
+      .min(5, 'Too Short!')
       .max(50, 'Too Long!')
       .required('Required'),
     email: Yup.string().email('Invalid email').required('Required'),
@@ -55,10 +76,14 @@ const Register: React.FC = (props: any) => {
           password: '',
         }}
         validationSchema={SignupSchema}
-        onSubmit={(values: User, { setSubmitting }: FormikHelpers<User>) => {
+        onSubmit={(
+          values: User,
+          { setSubmitting, resetForm }: FormikHelpers<User>
+        ) => {
           setTimeout(() => {
             dispatch(insertNewUser(values));
             setSubmitting(false);
+            resetForm();
           }, 500);
         }}
       >
@@ -138,6 +163,10 @@ const Register: React.FC = (props: any) => {
                         label="Password"
                         id="password"
                         autoComplete="new-password"
+                        error={touched.password && Boolean(errors.password)}
+                        helperText={touched.password && errors.password}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
                       />
                     </Grid>
                   </Grid>
@@ -151,7 +180,7 @@ const Register: React.FC = (props: any) => {
                   </Button>
                   <Grid container justifyContent="flex-end">
                     <Grid item>
-                      <Link href="/account/Login" variant="body2">
+                      <Link href="/account/Login">
                         Already have an account? Sign in
                       </Link>
                     </Grid>
@@ -163,13 +192,12 @@ const Register: React.FC = (props: any) => {
         )}
       </Formik>
       {alertVisibility && (
-        <Fade in={alertVisibility} timeout={1000}>
-          <Alert severity="error">
-            <AlertTitle>Error</AlertTitle>
-            This is an error alert —{' '}
-            <strong>Email already exist in our database!</strong>
+        <Snackbar open={alertVisibility} autoHideDuration={2000}>
+          <Alert severity={severity}>
+            <AlertTitle>{alertTitle}</AlertTitle>
+            <strong>{statusMessage}</strong>
           </Alert>
-        </Fade>
+        </Snackbar>
       )}
     </>
   );

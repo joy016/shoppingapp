@@ -1,9 +1,9 @@
-import NavBar from "./NavBar";
+import NavigationPage from '.';
 
 function Layout(props: any) {
   return (
     <div>
-      <NavBar />
+      <NavigationPage />
       <main>{props.children}</main>
     </div>
   );

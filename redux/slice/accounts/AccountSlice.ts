@@ -20,13 +20,13 @@ export const insertNewUser = createAsyncThunk(
 );
 
 interface AccountState {
-  status: 'idle' | 'pending' | 'success' | 'failure';
+  status: string | null | undefined;
   error: string | null | undefined;
   data: User | null;
 }
 
 const initialState: AccountState = {
-  status: 'idle',
+  status: '',
   error: '',
   data: null,
 };

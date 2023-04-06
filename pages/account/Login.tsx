@@ -12,7 +12,7 @@ import {
   Box,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Link from '@mui/material/Link';
+import Link from 'next/link';
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { UserLogIn } from '../../ts/accounts';
@@ -101,13 +101,11 @@ const Login: React.FC = () => {
                 </Button>
                 <Grid container>
                   <Grid item xs>
-                    <Link href="#" variant="body2">
-                      Forgot password?
-                    </Link>
+                    <Link href="#">Forgot password?</Link>
                   </Grid>
                   <Grid item>
-                    <Link href="#" variant="body2">
-                      {"Don't have an account? Sign Up"}
+                    <Link href="/account/Register">
+                      Don't have an account? Sign Up
                     </Link>
                   </Grid>
                 </Grid>
