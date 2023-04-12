@@ -1,10 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { useDispatch, TypedUseSelectorHook, useSelector } from 'react-redux';
 import { AccountSlice } from './slice/accounts/AccountSlice';
+import { userSlice } from './slice/accounts/SignInSlice';
+import { ResetPasswordSlice } from './slice/accounts/ResetPasswordSlice';
 
 export const store = configureStore({
   reducer: {
     account: AccountSlice.reducer,
+    loginAccount: userSlice.reducer,
+    resetPassword: ResetPasswordSlice.reducer,
   },
 });
 

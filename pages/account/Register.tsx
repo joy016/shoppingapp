@@ -181,7 +181,15 @@ const Register: React.FC<MyAlertProps> = (props) => {
                   <Grid container justifyContent="flex-end">
                     <Grid item>
                       <Link href="/account/Login">
-                        Already have an account? Sign in
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            textDecoration: 'underline',
+                            color: 'blue',
+                          }}
+                        >
+                          Already have an account? Sign in
+                        </Typography>
                       </Link>
                     </Grid>
                   </Grid>

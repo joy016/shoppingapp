@@ -10,3 +10,9 @@ export interface UserLogIn {
   password: string;
   isLoggedIn: boolean;
 }
+
+export interface resetLogin {
+  email: string;
+  password: string;
+  confirmPassword: string;
+}

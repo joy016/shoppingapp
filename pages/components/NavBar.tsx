@@ -1,13 +1,14 @@
 import Link from 'next/link';
 import { HiShoppingCart } from 'react-icons/hi';
 import { Box, Tab, Tabs } from '@mui/material';
+import Profile from '../account/Profile';
 
-const NavBar = () => {
+const NavBar: React.FC = () => {
   return (
-    <Box sx={{ width: '100%', backgroundColor: 'primary.main' }}>
-      <Tabs sx={{ color: 'white' }} centered>
+    <Box sx={{ width: '100%' }}>
+      <Tabs centered>
         <Link href="/account/Register">
-          <Tab sx={{ color: 'white' }} label="Shop" />
+          <Tab label="Shop" />
         </Link>
         <Link href="/account/Register">
           <Tab label="Contact Us" />
@@ -27,6 +28,7 @@ const NavBar = () => {
         <Link href="/account/Register" passHref>
           <Tab label="Register" component="a" />
         </Link>
+        <Profile />
       </Tabs>
     </Box>
   );

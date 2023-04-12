@@ -1,0 +1,7 @@
+a {
+  text-decoration: none;
+}
+.inputRounded .MuiOutlinedInput-root {
+  border-radius: 50px;
+  width: 50rem;
+}

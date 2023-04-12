@@ -1,13 +1,22 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { UserLogIn } from '../../../ts/accounts';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { userAPI } from './UserApi';
 
 export const LoginUser = createAsyncThunk(
   'users/fetchLogin',
-  async (users: UserLogIn) => {
-    const response = await userAPI.fetchLogin(users);
-    return response.data;
+  async (user: UserLogIn) => {
+    const { email, password } = user;
+
+    try {
+      const isLoginValid = await userAPI.checkLoginUser(email, password);
+      if (isLoginValid) {
+        return { email, password };
+      } else {
+        return;
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 );
 
@@ -26,8 +35,6 @@ export const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(LoginUser.fulfilled, (state, action) => {
-        state.email = action.payload.email;
-        state.password = action.payload.password;
         state.isLoggedIn = true;
       })
       .addCase(LoginUser.rejected, (state, action) => {

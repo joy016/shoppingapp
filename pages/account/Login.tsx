@@ -1,4 +1,4 @@
-import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {
   Container,
   CssBaseline,
@@ -10,20 +10,45 @@ import {
   Button,
   Grid,
   Box,
+  InputAdornment,
+  IconButton,
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Link from 'next/link';
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { UserLogIn } from '../../ts/accounts';
-import { useAppDispatch } from '@/redux/store';
+import { RootState, useAppDispatch } from '@/redux/store';
 import { LoginUser } from '../../redux/slice/accounts/SignInSlice';
+import { useState } from 'react';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { useSelector } from 'react-redux';
 
 const Login: React.FC = () => {
+  const [showPassword, setShowPassword] = useState(false);
   const dispatch = useAppDispatch();
+  const isLogIn = useSelector(
+    (state: RootState) => state.loginAccount.isLoggedIn
+  );
+
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+
   const SigninSchema = Yup.object().shape({
-    email: Yup.string().email('Invalid email').required('Required'),
-    password: Yup.string().email('Invalid email').required('Required'),
+    email: Yup.string()
+      .email('Invalid Email')
+      .required('Email Address Required!!'),
+    password: Yup.string()
+      .min(8, 'Password must be 8 characters long')
+      .matches(/[0-9]/, 'Password requires a number')
+      .matches(/[a-z]/, 'Password requires a lowercase letter')
+      .matches(/[A-Z]/, 'Password requires an uppercase letter')
+      .matches(/[^\w]/, 'Password requires a symbol'),
   });
 
   const theme = createTheme();
@@ -60,11 +85,13 @@ const Login: React.FC = () => {
               setTimeout(() => {
                 dispatch(LoginUser(values));
                 setSubmitting(false);
+                console.log(values);
+                console.log('Status', isLogIn);
               }, 500);
             }}
           >
-            {({ errors, touched }) => (
-              <Form>
+            {({ errors, touched, handleBlur, handleChange, handleSubmit }) => (
+              <form onSubmit={handleSubmit}>
                 <Field
                   as={TextField}
                   margin="normal"
@@ -75,6 +102,10 @@ const Login: React.FC = () => {
                   name="email"
                   autoComplete="email"
                   autoFocus
+                  error={touched.email && Boolean(errors.email)}
+                  helperText={touched.email && errors.email}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
                 />
                 <Field
                   as={TextField}
@@ -83,9 +114,27 @@ const Login: React.FC = () => {
                   fullWidth
                   name="password"
                   label="Password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   id="password"
                   autoComplete="current-password"
+                  error={touched.password && Boolean(errors.password)}
+                  helperText={touched.password && errors.password}
+                  onBlur={handleBlur}
+                  onChange={handleChange}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
                 <FormControlLabel
                   control={<Checkbox value="remember" color="primary" />}
@@ -101,15 +150,33 @@ const Login: React.FC = () => {
                 </Button>
                 <Grid container>
                   <Grid item xs>
-                    <Link href="#">Forgot password?</Link>
+                    <Link href="/account/ResetPassword">
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          textDecoration: 'underline',
+                          color: 'blue',
+                        }}
+                      >
+                        Forgot password?
+                      </Typography>
+                    </Link>
                   </Grid>
                   <Grid item>
                     <Link href="/account/Register">
-                      Don't have an account? Sign Up
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          textDecoration: 'underline',
+                          color: 'blue',
+                        }}
+                      >
+                        Don't have an account? Sign Up
+                      </Typography>
                     </Link>
                   </Grid>
                 </Grid>
-              </Form>
+              </form>
             )}
           </Formik>
         </Box>
