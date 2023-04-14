@@ -18,12 +18,8 @@ const top100Films = [
 ];
 
 const SearchProducts: React.FC = () => {
-  const CustomTextField = styled(TextField)({
-    borderRadius: '20%',
-    width: '50rem',
-  });
   return (
-    <Stack spacing={2} sx={{ width: 300 }}>
+    <Stack spacing={2} sx={{ width: '50rem' }}>
       <Autocomplete
         freeSolo
         id="free-solo-2-demo"

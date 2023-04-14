@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles';
 import NavBar from './NavBar';
 import ResponsiveNavBar from './ResponsiveNavBar';
 import SecondRowNav from './SecondRowNav';
+import { background } from '@chakra-ui/react';
 
 const NavigationPage: React.FC = () => {
   const isSmallScreen = useMediaQuery('(max-width:600px)');
@@ -21,28 +22,34 @@ const NavigationPage: React.FC = () => {
 
   return (
     <>
-      <Box sx={{ width: '100%' }}>
-        <Stack spacing={2}>
-          <Typography
-            variant="body2"
-            style={{
+      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+        <Paper elevation={1}>
+          <Box
+            sx={{
+              height: '50px',
               backgroundColor: 'black',
-              color: 'white',
-              textAlign: 'center',
-              paddingTop: 10,
-              paddingBottom: 10,
+              alignItems: 'center',
+              justifyContent: 'center',
+              display: 'flex',
             }}
           >
-            Free Shipping on all orders over ₱500.00! For a limited time only.
-          </Typography>
-          <Item>
+            <Typography
+              variant="subtitle1"
+              style={{
+                color: 'white',
+              }}
+            >
+              Free Shipping on all orders over ₱500.00! For a limited time only.
+            </Typography>
+          </Box>
+
+          <Box sx={{ padding: '15px 2%' }}>
             <SecondRowNav />
-          </Item>
-          <Item>
-            {(isMediumScreen || isLargeScreen) && <NavBar />}
-            {isSmallScreen && <ResponsiveNavBar />}
-          </Item>
-        </Stack>
+          </Box>
+          <Box>
+            <NavBar />
+          </Box>
+        </Paper>
       </Box>
     </>
   );

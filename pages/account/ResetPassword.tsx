@@ -17,7 +17,10 @@ import * as Yup from 'yup';
 import Link from 'next/link';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import { useSelector } from 'react-redux';
-import { resetPassword } from '@/redux/slice/accounts/ResetPasswordSlice';
+import {
+  resetPassword,
+  resetStatus,
+} from '@/redux/slice/accounts/ResetPasswordSlice';
 import { resetLogin } from '@/ts/accounts';
 import { useAppDispatch, RootState } from '@/redux/store';
 import SnackbarAlert, {
@@ -27,7 +30,7 @@ import router from 'next/router';
 
 const ResetPassword: React.FC = () => {
   const dispatch = useAppDispatch();
-  const status = useSelector((state: RootState) => state.resetPassword.status);
+
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setshowConfirmPassword] =
     useState<boolean>(false);
@@ -35,10 +38,11 @@ const ResetPassword: React.FC = () => {
   const [statusMessage, setStatusMessage] = useState('');
   const [severity, setSeverity] = useState<AlertColors | undefined>();
   const [alertTitle, setAlertTitle] = useState('');
+  const status = useSelector((state: RootState) => state.resetPassword.status);
 
   useEffect(() => {
     if (status === 'success') {
-      setStatusMessage('PasswordResetSuccessFully Successfully');
+      setStatusMessage('PasswordReset Successfully');
       setSeverity(AlertColors.SUCCESS);
       setAlertTitle('Success');
       setAlertVisibility(true);
@@ -46,6 +50,7 @@ const ResetPassword: React.FC = () => {
       const timeoutId = setTimeout(() => {
         setAlertVisibility(false);
         router.push('/account/Login');
+        dispatch(resetStatus());
       }, 2000);
 
       return () => clearTimeout(timeoutId);

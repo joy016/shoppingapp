@@ -1,5 +1,11 @@
-import NavBar from "./components/NavBar";
+import MainShopPage from './products';
 
-export default function Home() {
-  return <></>;
-}
+const Home = () => {
+  return (
+    <div>
+      <MainShopPage />
+    </div>
+  );
+};
+
+export default Home;

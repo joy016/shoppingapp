@@ -21,7 +21,7 @@ interface ResetPasswordState {
   data: resetLogin | null;
 }
 
-const initialState: ResetPasswordState = {
+export const initialState: ResetPasswordState = {
   status: '',
   error: '',
   data: null,
@@ -30,7 +30,11 @@ const initialState: ResetPasswordState = {
 export const ResetPasswordSlice = createSlice({
   name: 'resetPassword',
   initialState,
-  reducers: {},
+  reducers: {
+    resetStatus: (state) => {
+      state.status = initialState.status;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(resetPassword.pending, (state) => {
@@ -44,3 +48,5 @@ export const ResetPasswordSlice = createSlice({
       });
   },
 });
+
+export const { resetStatus } = ResetPasswordSlice.actions;
